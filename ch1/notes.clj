@@ -108,3 +108,27 @@ circumference
 (sqrt (+ (sqrt 2) (sqrt 3)))
 (square (sqrt 1000))
 
+;; 1.1.8 Procedures as Black-Box Abstractions
+(defn sqrt [x]
+  (defn good-enough? [guess x]
+    (< (abs (- (square guess) x)) 0.001))
+  (defn improve [guess x]
+    (average guess (/ x guess)))
+  (defn sqrt-iter [guess x]
+    (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x)))
+  (sqrt-iter 1.0 x))
+
+(defn sqrt [x]
+  (defn good-enough? [guess]
+    (< (abs (- (square guess) x)) 0.001))
+  (defn improve [guess]
+    (average guess (/ x guess)))
+  (defn sqrt-iter [guess]
+    (if (good-enough? guess)
+      guess
+      (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+(sqrt 9)
