@@ -132,3 +132,19 @@ circumference
   (sqrt-iter 1.0))
 
 (sqrt 9)
+
+;; 1.2 Procedures and the Processes They Generate
+
+;; 1.2.1 Linear Recursion and Iteration
+(defn factorial [n]
+  (if (= n 1)
+    1
+    (* n (factorial (- n 1)))))
+
+(defn factorial [n]
+  (defn iter [product counter]
+    (if (> counter n)
+      product
+      (iter (* counter product)
+            (+ counter 1))))
+  (iter 1 1))
