@@ -1,3 +1,5 @@
+; Procedure that computes elements of Pascal's Triangle
+
 (defn triangle [row col]
   (cond (< row col) false
         (or (= col 0) (= row col)) 1
