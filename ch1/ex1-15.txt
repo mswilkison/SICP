@@ -1,0 +1,5 @@
+Space grows linearly O(n) with the input.
+
+This function will repeat many computations for each denomination
+of coins. Since we have 5 different denominations, the rate
+of growth in the number of steps is O(n^5).
