@@ -210,5 +210,8 @@ circumference
         (even? n) (square (fast-expt b (/ n 2)))
         :else (* b (fast-expt b (- n 1)))))
 
-(fast-expt 4 2)
-(fast-expt 5 3)
+; 1.2.5 Greatest Common Divisors
+(defn gcd [a b]
+  (if (= b 0)
+    a
+    (gcd b (mod a b))))
