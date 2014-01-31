@@ -131,8 +131,6 @@ circumference
       (sqrt-iter (improve guess))))
   (sqrt-iter 1.0))
 
-(sqrt 9)
-
 ;; 1.2 Procedures and the Processes They Generate
 
 ;; 1.2.1 Linear Recursion and Iteration
@@ -215,3 +213,33 @@ circumference
   (if (= b 0)
     a
     (gcd b (mod a b))))
+
+; 1.2.6 Example: Testing for Primality
+(defn divides? [a b]
+  (= (mod b a) 0))
+
+(defn smallest-divisor [n]
+  (defn find-divisor [test-divisor]
+    (cond (> (square test-divisor) n) n
+          (divides? test-divisor n) test-divisor
+          :else (find-divisor (+ test-divisor 1))))
+  (find-divisor 2))
+
+(defn prime? [n]
+  (= n (smallest-divisor n)))
+
+(defn expmod [base exp m]
+  (cond (= exp 0) 1
+        (even? exp)
+          (mod (square (expmod base (/ exp 2) m)) m)
+        :else (mod (* base (expmod base (- exp 1) m)) m)))
+
+(defn fermat-test [n]
+  (defn try-it [a]
+    (= (expmod a n n) a))
+  (try-it (+ 1 (rand-int n))))
+
+(defn fast-prime? [n times]
+  (cond (= times 0) true
+        (fermat-test n) (fast-prime? n (- times 1))
+        :else false))
