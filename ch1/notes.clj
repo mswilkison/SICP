@@ -301,3 +301,50 @@ circumference
 
 (integral cube 0 1 0.01)
 (integral cube 0 1 0.001)
+
+; 1.3.2 Constructing Procedures Using Lambda
+(fn [x] (+ x 4))
+(fn [x] (/ 1.0 (* x (+ x 2))))
+
+(defn pi-sum [a b]
+  (sum (fn [x] (/ 1.0 (* x (+ x 2))))
+       a
+       (fn [x] (+ x 4))
+       b))
+
+(defn integral [f a b dx]
+  (* (sum f
+          (+ a (/ dx 2.0))
+          (fn [x] (+ x dx))
+          b)
+     dx))
+
+(defn f [x y]
+  (defn f-helper [a b]
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+  (f-helper (+ 1 (* x y))
+            (- 1 y)))
+
+(defn f [x y]
+  (fn [a b]
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+  (+ 1 (* x y))
+  (- 1 y))
+
+(defn f [x y]
+  (let [a (+ 1 (* x y))
+        b (- 1 y)]
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+
+(defn f [x y]
+  (defn a (+ 1 (* x y)))
+  (defn b (- 1 y))
+  (+ (* x (square a))
+     (* y b)
+     (* a b)))
