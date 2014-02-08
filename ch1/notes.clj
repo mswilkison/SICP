@@ -343,8 +343,61 @@ circumference
        (* a b))))
 
 (defn f [x y]
-  (defn a (+ 1 (* x y)))
-  (defn b (- 1 y))
+  (def a (+ 1 (* x y)))
+  (def b (- 1 y))
   (+ (* x (square a))
      (* y b)
      (* a b)))
+
+; 1.3.3 Procedures as General Methods
+
+; - Finding roots of equations by the half-interval method
+(defn close-enough? [x y]
+  (< (abs (- x y)) 0.001))
+
+(defn positive? [x]
+  (> x 0))
+
+(defn negative? [x]
+  (not (positive? x)))
+
+(defn search [f neg-point pos-point]
+  (let [midpoint (average neg-point pos-point)]
+    (if (close-enough? neg-point pos-point)
+      midpoint
+      (let [test-value (f midpoint)]
+        (cond (positive? test-value) (search f neg-point midpoint)
+              (negative? test-value) (search f midpoint pos-point)
+              :else midpoint)))))
+
+(defn half-interval-method [f a b]
+  (let [a-value (f a)
+        b-value (f b)]
+    (cond (and (negative? a-value) (positive? b-value)) (search f a b)
+          (and (negative? b-value) (positive? a-value)) (search f b a)
+          :else (throw (Exception. (str "Values are not of opposite sign" a b))))))
+
+(half-interval-method #(Math/sin %) 2.0 4.0)
+(half-interval-method (fn [x] (- (* x x x) (* 2 x) 3))
+                      1.0
+                      2.0)
+
+; - Finding fixed points of functions
+(def tolerance 0.00001)
+
+(defn fixed-point [f first-guess]
+  (defn close-enough? [v1 v2]
+    (< (abs (- v1 v2)) tolerance))
+  (defn try-it [guess]
+    (let [step (f guess)]
+      (if (close-enough? guess step)
+        step
+        (try-it step))))
+  (try-it first-guess))
+
+(fixed-point #(Math/cos %) 1.0)
+(fixed-point (fn [y] (+ (Math/sin y) (Math/cos y))) 1.0)
+
+(defn sqrt [x]
+  (fixed-point (fn [y] (average y (/ x y)))
+               1.0))
