@@ -1,12 +1,14 @@
 ; Recursive implementation
 (defn cont-frac [n d k]
-  (if (= k 0)
-    (n k)
-    (/ (n k) (+ (d k) (cont-frac n d (dec k))))))
+  (defn frac [i]
+    (if (< i k)
+      (/ (n i) (+ (d i) (frac (inc i))))
+      (/ (n i) (d i))))
+  (frac 1))
 
 (cont-frac (fn [i] 1.0)
            (fn [i] 1.0)
-           10)
+           11)
 
 ; Iterative implementation
 (defn cont-frac-iter [n d k]
@@ -20,4 +22,4 @@
                 (fn [i] 1.0)
                 11)
 
-(/ 1 (/ (+ 1 (sqrt 5)) 2)) ; 1 / golden ratio
+(/ 1 (/ (+ 1 (Math/sqrt 5)) 2)) ; 1 / golden ratio

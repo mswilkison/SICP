@@ -1,7 +1,9 @@
 (defn cont-frac [n d k]
-  (if (= k 0)
-    (n k)
-    (/ (n k) (+ (d k) (cont-frac n d (dec k))))))
+  (defn frac [i]
+    (if (< i k)
+      (/ (n i) (+ (d i) (frac (inc i))))
+      (/ (n i) (d i))))
+  (frac 1))
 
 (defn d [i]
   (if-not (= 0 (mod (+ i 1) 3))
