@@ -72,3 +72,14 @@ z
     (cons (/ n g) [(/ d g)])))
 
 (print-rat (add-rat one-third one-third))
+
+(defn make-rat [n d]
+  (cons n [d]))
+
+(defn numer [x]
+  (let [g (gcd (first x) (last x))]
+    (/ (first x) g)))
+
+(defn denom [x]
+  (let [g (gcd (first x) (last x))]
+    (/ (last x) g)))
