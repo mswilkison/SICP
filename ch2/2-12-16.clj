@@ -64,3 +64,12 @@
 
 (center (div-interval a a))
 (center (div-interval a b))
+
+; Exercise 2.15
+; The reason for the discrepancy has to do with the inherent imprecision in the computer's
+; representation of floating-point numbers. Repeated operations on an imprecise number
+; will compound the imprecision. In this case, Eva Lu Ator is correct.
+
+; Exercise 2.16
+; We cannot create a library without this shortcoming, but we can avoid repeating variables
+; to the extent possible so as to minimize the error.
