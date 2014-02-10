@@ -3,8 +3,8 @@
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
 
-(defn linear-combination [a b x y]
-  (add (mult a x) (mult b y)))
+;(defn linear-combination [a b x y]
+;  (add (mult a x) (mult b y)))
 
 ;; 2.1 Introduction to Data Abstraction
 
@@ -122,3 +122,12 @@ z
   (mul-interval x
                 (make-interval (/ 1.0 (upper-bound y))
                                (/ 1.0 (lower-bound y)))))
+
+(defn make-center-width [c w]
+  (make-interval (- c w) (+ c w)))
+
+(defn center [i]
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(defn width [i]
+  (/ (- (upper-bound i) (lower-bound i)) 2))
