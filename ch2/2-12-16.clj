@@ -37,3 +37,30 @@
 (percent (mul-interval a b))
 ; The tolerance of the product of two intervals is approximately
 ; the sum of the tolerance's of the two intervals
+
+; Exercise 2.14
+(defn div-interval [x y]
+  (mul-interval x
+                (make-interval (/ 1.0 (upper-bound y))
+                               (/ 1.0 (lower-bound y)))))
+(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn par1 [r1 r2]
+  (div-interval (mul-interval r1 r2)
+                (add-interval r1 r2)))
+
+(defn par2 [r1 r2]
+  (let [one (make-interval 1 1)]
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+
+(par1 a b)
+(par2 a b)
+(par1 (make-center-percent 1 1) (make-center-percent 1 1))
+(par2 (make-center-percent 1 1) (make-center-percent 1 1))
+
+(center (div-interval a a))
+(center (div-interval a b))
