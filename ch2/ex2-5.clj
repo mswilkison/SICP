@@ -1,5 +1,9 @@
+(defn expt [b p]
+  (if (= p 0) 1
+    (* b (expt b (dec p)))))
+
 (defn cons [a b]
-  (* (Math/pow 2 a) (Math/pow 3 b)))
+  (* (expt 2 a) (expt 3 b)))
 
 (defn factor-count [z d]
   (defn iter [x result]
@@ -10,14 +14,11 @@
 
 (defn car [z]
   (factor-count z 2))
-  ;(get-val (factor z 3) 2))
 
 (defn cdr [z]
   (factor-count z 3))
-  ;(get-val (factor z 2) 3))
 
-(def z (cons 2 4))
-z
+(def z (cons 5 6))
 
 (car z)
 (cdr z)
