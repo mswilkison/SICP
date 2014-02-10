@@ -35,7 +35,7 @@
      2))
 
 (def a (make-interval -5 10))
-(def b (make-interval 7 16))
+(def b (make-interval -7 16))
 
 (width a)
 (width b)
@@ -59,3 +59,13 @@
     (mul-interval x
                   (make-interval (/ 1.0 (upper-bound y))
                                  (/ 1.0 (lower-bound y))))))
+
+; Exercise 2.11
+(defn mul-interval [x y]
+  (let [p1 (* (lower-bound x) (lower-bound y))
+        p2 (* (upper-bound x) (upper-bound y))]
+    (if (and (span-zero? x) (span-zero? y))
+      (let [p3 (* (lower-bound x) (upper-bound y))
+            p4 (* (upper-bound x) (lower-bound y))]
+        (make-interval (min p1 p2 p3 p4) (max p1 p2 p3 p4)))
+      (make-interval p1 p2))))
