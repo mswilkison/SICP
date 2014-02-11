@@ -18,7 +18,6 @@
 
 (defn branch-weight [branch]
   (let [struc (branch-structure branch)]
-    (println struc)
     (if (seq? struc)
       (total-weight struc)
       struc)))
@@ -34,3 +33,26 @@
 
 (total-weight z)
 (total-weight zeta)
+
+(defn torque [branch]
+  (* (branch-length branch)
+     (branch-weight branch)))
+
+(defn balanced? [mobile]
+  (if-not (seq? (branch-structure mobile))
+    true
+    (and (= (torque (left-branch mobile))
+            (torque (right-branch mobile)))
+         (balanced? (branch-structure (left-branch mobile)))
+         (balanced? (branch-structure (right-branch mobile))))))
+
+(def unbalanced-mobile (make-mobile (list 1 z) x))
+(def naively-balanced-mobile (make-mobile (list 2 z) (list x x)))
+naively-balanced-mobile
+
+(balanced? z)
+(seq? (branch-structure z))
+(branch-structure z)
+(branch-structure (left-branch z))
+(balanced? zeta)
+(balanced? unbalanced-mobile)
