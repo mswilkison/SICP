@@ -191,3 +191,37 @@ one-through-four
 
 (append squares odds)
 (append odds squares)
+
+(defn scale-list [items factor]
+  (if (empty? items)
+    ()
+    (cons (* (first items) factor)
+          (scale-list (rest items) factor))))
+
+(scale-list '(1 2 3 4 5) 10)
+
+(map + '(1 2 3) '(40 50 60) '(700 800 900))
+
+(map (fn [x y] (+ x (* 2 y)))
+     '(1 2 3)
+     '(4 5 6))
+
+;(defn map [proc items]
+;  (if (empty? items)
+;    ()
+;    (cons (proc (first items))
+;          (map proc (rest items)))))
+
+(defn abs [x]
+  (if (< x 0)
+    (- x)
+    x))
+
+(map abs (list -10 2.5 -11.6 17))
+
+(map (fn [x] (* x x))
+     '(1 2 3 4))
+
+(defn scale-list [items factor]
+  (map (fn [x] (* x factor))
+       items))
