@@ -131,3 +131,63 @@ z
 
 (defn width [i]
   (/ (- (upper-bound i) (lower-bound i)) 2))
+
+(defn par1 [r1 r2]
+  (div-interval (mul-interval r1 r2)
+                (add-interval r1 r2)))
+
+(defn par2 [r1 r2]
+  (let [one (make-interval 1 1)]
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+
+;; 2.2 Hierarchical Data and the Closure Property
+
+; 2.2.1 Representing Sequences
+(cons 1
+      (cons 2
+            (cons 3
+                  (cons 4 [nil]))))
+
+(list 1 2 3 4)
+
+(def one-through-four (list 1 2 3 4))
+one-through-four
+
+(first one-through-four)
+(rest one-through-four)
+(first (rest one-through-four))
+(cons 10 one-through-four)
+(cons 5 one-through-four)
+
+(defn list-ref [items n]
+  (if (= n 0)
+    (first items)
+    (list-ref (rest items) (dec n))))
+
+(def squares '(1 4 9 16 25))
+(list-ref squares 3)
+
+(defn length [items]
+  (if (empty? items)
+    0
+    (+ 1 (length (rest items)))))
+
+(def odds '(1 3 5 7))
+(length odds)
+
+(defn length [items]
+  (defn length-iter [a counter]
+    (if (empty? a)
+      counter
+      (length-iter (rest a) (inc counter))))
+  (length-iter items 0))
+
+(defn append [list1 list2]
+  (if (empty? list1)
+    list2
+    (cons (first list1) (append (rest list1) list2))))
+
+(append squares odds)
+(append odds squares)
