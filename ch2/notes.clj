@@ -225,3 +225,21 @@ one-through-four
 (defn scale-list [items factor]
   (map (fn [x] (* x factor))
        items))
+
+; 2.2.2 Hierarchical Structures
+(cons '(1 2) '(3 4))
+
+(def x (cons (list 1 2) (list 3 4)))
+(length x)
+
+(defn count-leaves [x]
+  (cond (not (seq? x)) 1
+        (empty? x) 0
+        :else (+ (count-leaves (first x))
+                 (count-leaves (rest x)))))
+
+(count-leaves x)
+
+(list x x)
+(length (list x x))
+(count-leaves (list x x))
