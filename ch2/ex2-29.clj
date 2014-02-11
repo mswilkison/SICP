@@ -38,17 +38,18 @@
   (* (branch-length branch)
      (branch-weight branch)))
 
+(defn branch-balanced? [branch]
+  (if (seq? (branch-structure branch))
+    (balanced? (branch-structure branch))
+    true))
+
 (defn balanced? [mobile]
-  (if-not (seq? (branch-structure mobile))
-    true
-    (and (= (torque (left-branch mobile))
-            (torque (right-branch mobile)))
-         (balanced? (branch-structure (left-branch mobile)))
-         (balanced? (branch-structure (right-branch mobile))))))
+  (and (= (torque (left-branch mobile))
+          (torque (right-branch mobile)))
+       (branch-balanced? (left-branch mobile))
+       (branch-balanced? (right-branch mobile))))
 
 (def unbalanced-mobile (make-mobile (list 1 z) x))
-(def naively-balanced-mobile (make-mobile (list 2 z) (list x x)))
-naively-balanced-mobile
 
 (balanced? z)
 (seq? (branch-structure z))
