@@ -50,6 +50,8 @@
        (branch-balanced? (right-branch mobile))))
 
 (def unbalanced-mobile (make-mobile (list 1 z) x))
+(def naively-balanced-mobile (make-mobile (list 2 z) (list x x)))
+naively-balanced-mobile
 
 (balanced? z)
 (seq? (branch-structure z))
