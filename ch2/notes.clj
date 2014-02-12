@@ -260,3 +260,100 @@ one-through-four
        tree))
 
 (scale-tree (list 1 (list 2 (list 3 4) 5) (list 6 7)) 10)
+
+; 2.2.3 Sequences as Conventional Interfaces
+(defn square [x]
+  (* x x))
+
+(defn sum-odd-squares [tree]
+  (cond (not (seq? tree))
+          (if (odd? tree) (square tree) 0)
+        (empty? tree) 0
+        :else (+ (sum-odd-squares (first tree))
+                 (sum-odd-squares (rest tree)))))
+
+(defn fib [n]
+  (cond (= n 0) 0
+        (= n 1) 1
+        :else (+ (fib (- n 1))
+                 (fib (- n 2)))))
+
+(defn even-fibs [n]
+  (defn step [k]
+    (if (> k n)
+      ()
+      (let [f (fib k)]
+        (if (even? f)
+          (cons f (step (inc k)))
+          (step (inc k))))))
+  (step 0))
+
+(map square (list 1 2 3 4 5))
+
+(defn my-filter [predicate lst]
+  (cond (empty? lst) ()
+        (predicate (first lst))
+          (cons (first lst)
+                (filter predicate (rest lst)))
+       :else (my-filter predicate (rest lst))))
+
+(my-filter odd? (list 1 2 3 4 5))
+
+(defn accumulate [op initial lst]
+  (if (empty? lst)
+    initial
+    (op (first lst)
+        (accumulate op initial (rest lst)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+(accumulate * 1 (list 1 2 3 4 5))
+(accumulate cons () (list 1 2 3 4 5))
+
+(defn enumerate-interval [low high]
+  (if (> low high)
+    ()
+    (cons low (enumerate-interval (inc low) high))))
+
+(defn enumerate-tree [tree]
+  (cond (not (seq? tree)) (list tree)
+        (empty? tree) ()
+        :else (append (enumerate-tree (first tree))
+                      (enumerate-tree (rest tree)))))
+
+(defn sum-odd-squares [tree]
+  (accumulate +
+              0
+              (map square
+                   (filter odd?
+                      (enumerate-tree tree)))))
+
+(defn even-fibs [n]
+  (accumulate cons
+              nil
+              (filter even?
+                      (map fib
+                           (enumerate-interval 0 n)))))
+
+(defn list-fib-squares [n]
+  (accumulate cons
+              nil
+              (map square
+                   (map fib
+                        (enumerate-interval 0 n)))))
+
+(list-fib-squares 10)
+
+(defn product-of-squares-of-odd-elements [lst]
+  (accumulate *
+              1
+              (map square
+                   (filter odd? lst))))
+
+(product-of-squares-of-odd-elements (list 1 2 3 4 5))
+
+;(defn salary-of-heighest-paid-programmer [records]
+;  (accumulate max
+;              0
+;              (map salary
+;                   (filter programmer? records))))
+
