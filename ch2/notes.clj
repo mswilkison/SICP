@@ -357,3 +357,59 @@ one-through-four
 ;              (map salary
 ;                   (filter programmer? records))))
 
+
+; Nested Mappings
+
+;(accumulate append
+;            ()
+;            (map (fn [i]
+;                   (map (fn [j] (list i j))
+;                        (enumerate-interval 1 (dec i))))
+;                 (enumerate-interval 1 n)))
+
+(defn flatmap [proc lst]
+  (accumulate append () (map proc lst)))
+
+(defn divides? [a b]
+  (= (mod b a) 0))
+
+(defn smallest-divisor [n]
+  (defn find-divisor [test-divisor]
+    (cond (> (square test-divisor) n) n
+          (divides? test-divisor n) test-divisor
+          :else (find-divisor (+ test-divisor 1))))
+  (find-divisor 2))
+
+(defn prime? [n]
+  (= n (smallest-divisor n)))
+
+(defn prime-sum? [pair]
+  (prime? (+ (first pair) (last pair))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (last pair) (+ (first pair) (last pair))))
+
+(defn prime-sum-pairs [n]
+  (map make-pair-sum
+       (filter prime-sum?
+               (flatmap
+                (fn [i]
+                  (map (fn [j] (list i j))
+                       (enumerate-interval 1 (dec i))))
+                (enumerate-interval 1 n)))))
+
+(prime-sum-pairs 6)
+
+(defn remove-item [item lst]
+  (filter (fn [x] (not (= x item)))
+          lst))
+
+(defn permutations [s]
+  (if (empty? s)
+    (list ())
+    (flatmap (fn [x]
+               (map (fn [p] (cons x p))
+                    (permutations (remove-item x s))))
+             s)))
+
+(permutations (list 1 2 3))
