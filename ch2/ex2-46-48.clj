@@ -40,8 +40,12 @@
 (defn edge2-frame [frame]
   (first (rest (rest frame))))
 
-(def fr (make-frame (make-vect 0 0) (make-vect 1 1) (make-vect 5 5)))
+; Exercise 2.48
+(defn make-segment [v1 v2]
+  (list v1 v2))
 
-(origin-frame fr)
-(edge1-frame fr)
-(edge2-frame fr)
+(defn start-segment [segment]
+  (first segment))
+
+(defn end-segment [segment]
+  (first (rest segment)))

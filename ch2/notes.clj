@@ -471,6 +471,47 @@ one-through-four
                     rotate180 flip-vert))
 )
 
+; Frames
+(defn make-vect [x-cor y-cor]
+  (cons x-cor [y-cor]))
+
+(defn xcor-vect [v]
+  (first v))
+
+(defn ycor-vect [v]
+  (first (rest v)))
+
+(defn bi-op-vect [op v1 v2]
+  (make-vect (op (xcor-vect v1)
+                 (xcor-vect v2))
+             (op (ycor-vect v1)
+                 (ycor-vect v2))))
+
+(defn add-vect [v1 v2]
+  (bi-op-vect + v1 v2))
+
+(defn sub-vect [v1 v2]
+  (bi-op-vect - v1 v2))
+
+(defn scale-vect [s v]
+  (make-vect (* s (xcor-vect v))
+             (* s (ycor-vect v))))
+
+(defn make-frame [origin edge1 edge2]
+  (list origin edge1 edge2))
+
+(defn make-frame [origin edge1 edge2]
+  (cons origin (cons edge1 [edge2])))
+
+(defn origin-frame [frame]
+  (first frame))
+
+(defn edge1-frame [frame]
+  (first (rest frame)))
+
+(defn edge2-frame [frame]
+  (first (rest (rest frame))))
+
 (defn frame-coord-map [frame]
   (fn [v]
     (add-vect
@@ -479,3 +520,13 @@ one-through-four
                            (edge1-frame frame))
                (scale-vect (ycor-vect v)
                            (edge2-frame frame))))))
+
+(comment
+  (defn segments->painter [segment-list]
+    (fn [frame]
+      (doall
+       (fn [segment]
+         (draw-line
+          ((frame-coord-map frame) (start-segment segment))
+          ((frame-coord-map frame) (end-segment segment))))
+       segment-list))))
