@@ -446,4 +446,27 @@ one-through-four
     (let [quarter (corner-split painter n)]
       (let [half (beside (flip-horiz quarter) quarter)]
         (below (flip-vert half) half))))
+
+  (defn square-of-four [tl tr bl br]
+    (fn [painter]
+      (let [top (beside (tl painter) (tr painter))
+            bottom (beside (bl painter) (br painter))]
+        (below bottom top))))
+
+  (defn flipped-pairs [painter]
+    (let [combine4 (square-of-four identity flip-vert
+                                   identity flip-vert)]
+      (combine4 painter)))
+
+  (def flipped-pairs
+    (square-of-four identity flip-vert identity flip-vert))
+
+  (defn square-limit [painter n]
+    (let [combine4 (square-of-four flip-horiz identity
+                                   rotate 180 flip-vert)]
+      (combine4 (corner-split painter n))))
+
+  (def square-limit
+    (square-of-four flip-horiz identity
+                    rotate180 flip-vert))
 )
