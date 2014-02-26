@@ -578,3 +578,29 @@ one-through-four
       (fn [frame]
         (paint-left frame)
         (paint-right frame)))))
+
+;; 2.3 Symbolic Data
+; 2.3.1 Quotation
+(def a 1)
+(def b 2)
+
+(list a b)
+(list 'a 'b)
+(list 'a b)
+
+(first '(a b c))
+(rest '(a b c))
+
+(quote a)
+(quote (a b c))
+(list 'car (list 'quote '(a b c)))
+
+'()
+
+(defn memq [item x]
+  (cond (empty? x) false
+        (= item (first x)) x
+        :else (memq item (rest x))))
+
+(memq 'apple '(pear banana prune))
+(memq 'apple '(x (apple sauce) y apple pear))
