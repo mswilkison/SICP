@@ -13,8 +13,6 @@
         (and (number? a1) (number? a2)) (+ a1 a2)
         :else (list '+ a1 a2)))
 
-(make-sum 4 -1)
-
 (defn make-product [m1 m2]
   (cond (or (=number? m1 0) (=number? m2 0)) 0
         (=number? m1 1) m2
@@ -37,6 +35,8 @@
 
 (defn multiplicand [p]
   (last p))
+
+; Exercise 2.56
 
 (defn exponentiation? [x]
   (and (seq? x) (= (first x) '**)))
@@ -67,3 +67,16 @@
                                                                    (make-sum (exponent exp) -1)))
                                 (deriv (base exp) var))
         :else (throw (Exception. "unknown expression type -- DERIV" exp))))
+
+; Exercise 2.57
+(defn augend [s]
+  (if (empty? (rest (rest (rest s))))
+    (last s)
+    (cons '+ (rest (rest s)))))
+
+(defn multiplicand [p]
+  (if (empty? (rest (rest (rest p))))
+    (last p)
+    (cons '* (rest (rest p)))))
+
+(deriv '(* x y (+ x 3)) 'x)
