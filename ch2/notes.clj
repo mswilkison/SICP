@@ -670,6 +670,7 @@ one-through-four
 (deriv '(* (* x y) (+ x 3)) 'x)
 
 ; 2.3.3 Example: Representing Sets
+; Sets as unordered lists
 (defn element-of-set? [x my-set]
   (cond (empty? my-set) false
         (= x (first my-set)) true
@@ -686,3 +687,23 @@ one-through-four
           (cons (first set1)
                 (intersection-set (rest set1) set2))
         :else (intersection-set (rest set1) set2)))
+
+; Sets as ordered lists
+(defn element-of-set? [x set1]
+  (cond (empty? set1) false
+        (= x (first set1)) true
+        (< x (first set1)) false
+        :else (element-of-set? x (rest set1))))
+
+(defn intersection-set [set1 set2]
+  (if (or (empty? set1) (empty? set2))
+    '()
+    (let [x1 (first set1)
+          x2 (first set2)]
+      (cond (= x1 x2) (cons x1
+                            (intersection-set (rest set1)
+                                              (rest set2)))
+            (< x1 x2) (intersection-set (rest set1)
+                                        set2)
+            (< x2 x1) (intersection-set set1
+                                        (rest set2))))))
