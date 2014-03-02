@@ -89,9 +89,6 @@
 (defn product? [x]
   (and (seq? x) (= (second x) '*)))
 
-(defn exponentiation? [x]
-  (and (seq? x) (= (second x) '**)))
-
 (defn make-sum [a1 a2]
   (cond (=number? a1 0) a2
         (=number? a2 0) a1
@@ -110,7 +107,20 @@
 (defn multiplier [p]
   (first p))
 
-(defn base [e]
-  (first e))
+(defn augend [s] (last s))
+
+(defn multiplicand [p] (last p))
 
 (deriv '(x + (3 * (x + (y + 2)))) 'x)
+
+; (b)
+(defn simplify [exp]
+  (if (empty? (rest exp))
+    (first exp)
+    exp))
+
+(defn augend [s] (simplify (rest (rest s))))
+
+(defn multiplicand [p] (simplify (rest (rest p))))
+
+(deriv '(x + 3 * (x + y + 2)) 'x)
