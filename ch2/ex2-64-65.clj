@@ -33,8 +33,8 @@
 
 ; Exercise 2.65
 ; We can define an O(n) implementation of union-set using balanced binary trees
-; by converting the trees into lists, using the O(n) procedures we previously defined to
-; union the two sets, and then converting the result back into a tree.
+; by converting the trees into lists, using the relevant O(n) procedures we previously defined
+; and then converting the result back into a tree.
 
 (defn entry [tree] (first tree))
 (defn left-branch [tree] (second tree))
@@ -64,3 +64,19 @@
                                       (rest set2))))))
   (list->tree (union-list (tree->list-2 tree1)
                           (tree->list-2 tree2))))
+
+(defn intersection-set [tree1 tree2]
+  (defn intersection-list [set1 set2]
+    (if (or (empty? set1) (empty? set2))
+      '()
+      (let [x1 (first set1)
+            x2 (first set2)]
+        (cond (= x1 x2) (cons x1
+                              (intersection-set (rest set1)
+                                                (rest set2)))
+              (< x1 x2) (intersection-set (rest set1)
+                                          set2)
+              (< x2 x1) (intersection-set set1
+                                          (rest set2))))))
+  (list->tree (intersection-list (tree->list-2 tree1)
+                                 (tree->list-2 tree2))))
