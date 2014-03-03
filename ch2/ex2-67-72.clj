@@ -76,3 +76,25 @@
 (def sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
 (decode sample-message sample-tree)
+
+; Exercise 2.68
+(defn element-of-set? [x my-set]
+  (cond (empty? my-set) false
+        (= x (first my-set)) true
+        :else (element-of-set? x (rest my-set))))
+
+(defn encode-symbol [letter branch]
+  (cond (leaf? branch) '()
+        (element-of-set? letter (symbols (left-branch branch)))
+          (append '(0) (encode-symbol letter (left-branch branch)))
+        (element-of-set? letter (symbols (right-branch branch)))
+          (append '(1) (encode-symbol letter (right-branch branch)))
+        :else (throw (Exception. "symbol not contained in tree" letter))))
+
+(defn encode [message tree]
+  (if (empty? message)
+    '()
+    (append (encode-symbol (first message) tree)
+            (encode (rest message) tree))))
+
+(encode '(A D A B B C A) sample-tree)
