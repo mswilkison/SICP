@@ -111,3 +111,17 @@
 (def sample-pairs '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
 (make-leaf-set sample-pairs)
 (generate-huffman-tree sample-pairs)
+
+; Exercise 2.70
+(def rel-freqs '((A 2) (BOOM 1) (GET 2) (JOB 2) (NA 16) (SHA 3) (YIP 9) (WAH 1)))
+(def rock-tree (generate-huffman-tree rel-freqs))
+(def encoded-song (encode '(GET A JOB
+                            SHA NA NA NA NA NA NA NA NA
+                            GET A JOB
+                            SHA NA NA NA NA NA NA NA NA
+                            WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP
+                            SHA BOOM)
+                          rock-tree))
+(count encoded-song) ; bits needed for Huffman encoding
+(Math/pow 2 3) ; 8 symbols to encode, so we need 3 bits per symbol
+(* 36 3) ; 36 symbols total, so 108 bits are needed for fixed-length encoding
