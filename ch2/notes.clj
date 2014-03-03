@@ -707,3 +707,29 @@ one-through-four
                                         set2)
             (< x2 x1) (intersection-set set1
                                         (rest set2))))))
+
+; Sets as binary trees
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (last tree))
+
+(defn make-tree [entry left right]
+  (list entry left right))
+
+(defn element-of-set? [x set1]
+  (cond (empty? set1) false
+        (= x (entry set1)) true
+        (< x (entry set1)) (element-of-set? x
+                                            (left-branch set1))
+        (> x (entry set1)) (element-of-set? x
+                                            (right-branch set1))))
+
+(defn adjoin-set [x set1]
+  (cond (empty? set1) (make-tree x '() '())
+        (= x (entry set1)) set1
+        (< x (entry set1)) (make-tree (entry set1)
+                                      (adjoin-set x (left-branch set1))
+                                      (right-branch set1))
+        (> x (entry set1)) (make-tree (entry set1)
+                                      (left-branch set1)
+                                      (adjoin-set x (right-branch set1)))))
