@@ -30,3 +30,37 @@
 ; and right-branch, respectively. The smaller and larger segments are passed to partial-tree to
 ; recursively construct the branches.
 ; The order of growth for list->tree is O(n).
+
+; Exercise 2.65
+; We can define an O(n) implementation of union-set using balanced binary trees
+; by converting the trees into lists, using the O(n) procedures we previously defined to
+; union the two sets, and then converting the result back into a tree.
+
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (last tree))
+
+(defn tree->list-2 [tree]
+  (defn copy-to-list [tree result-list]
+    (if (empty? tree)
+      result-list
+      (copy-to-list (left-branch tree)
+                    (cons (entry tree)
+                          (copy-to-list (right-branch tree)
+                                        result-list)))))
+  (copy-to-list tree '()))
+
+(defn union-set [tree1 tree2]
+  (defn union-list [set1 set2]
+    (let [x1 (first set1)
+          x2 (first set2)]
+      (cond (empty? set1) set2
+            (empty? set2) set1
+            (= x1 x2) (cons x1 (union-set (rest set1)
+                                          (rest set2)))
+            (< x1 x2) (cons x1 (union-set (rest set1)
+                                          set2))
+            :else (cons x2 (union-set set1
+                                      (rest set2))))))
+  (list->tree (union-list (tree->list-2 tree1)
+                          (tree->list-2 tree2))))
