@@ -98,3 +98,16 @@
             (encode (rest message) tree))))
 
 (encode '(A D A B B C A) sample-tree)
+
+; Exercise 2.69
+(defn generate-huffman-tree [pairs]
+  (defn successive-merge [leaf-set]
+    (if (empty? (rest leaf-set))
+      (first leaf-set)
+      (let [next-node (make-code-tree (first leaf-set) (second leaf-set))]
+        (successive-merge (adjoin-set next-node (rest (rest leaf-set)))))))
+  (successive-merge (make-leaf-set pairs)))
+
+(def sample-pairs '((A 8) (B 3) (C 1) (D 1) (E 1) (F 1) (G 1) (H 1)))
+(make-leaf-set sample-pairs)
+(generate-huffman-tree sample-pairs)
