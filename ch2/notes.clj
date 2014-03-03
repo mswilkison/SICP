@@ -733,3 +733,9 @@ one-through-four
         (> x (entry set1)) (make-tree (entry set1)
                                       (left-branch set1)
                                       (adjoin-set x (right-branch set1)))))
+
+; Sets and information retrieval
+(defn lookup [given-key set-of-records]
+  (cond (empty? set-of-records) false
+        (= given-key (key (first set-of-records))) (first set-of-records)
+        :else (lookup given-key (rest set-of-records))))
