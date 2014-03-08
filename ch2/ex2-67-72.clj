@@ -164,3 +164,10 @@
 
 ; 1 bit is required to encode the most frequent symbol
 ;(n-1) bits are needed to encode the least frequent symbol
+
+;; Exercise 2.72
+; Most frequent = O(n) A message containing n of the most frequent symbols only needs
+; to check the beginning of the tree for each symbol
+
+; Least frequent O(n^2) A message containing n of the least frequent symbols needs to
+; traverse down the entire tree each time (n symbols * n-1 steps down the tree)
