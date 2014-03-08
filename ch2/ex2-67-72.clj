@@ -99,7 +99,7 @@
 
 (encode '(A D A B B C A) sample-tree)
 
-; Exercise 2.69
+;; Exercise 2.69
 (defn generate-huffman-tree [pairs]
   (defn successive-merge [leaf-set]
     (if (empty? (rest leaf-set))
@@ -112,7 +112,7 @@
 (make-leaf-set sample-pairs)
 (generate-huffman-tree sample-pairs)
 
-; Exercise 2.70
+;; Exercise 2.70
 (def rel-freqs '((A 2) (BOOM 1) (GET 2) (JOB 2) (NA 16) (SHA 3) (YIP 9) (WAH 1)))
 (def rock-tree (generate-huffman-tree rel-freqs))
 (def encoded-song (encode '(GET A JOB
@@ -125,3 +125,42 @@
 (count encoded-song) ; bits needed for Huffman encoding
 (Math/pow 2 3) ; 8 symbols to encode, so we need 3 bits per symbol
 (* 36 3) ; 36 symbols total, so 108 bits are needed for fixed-length encoding
+
+;; Exercise 2.71
+;********n=5********
+;       +
+;      / \
+;     16  \
+;          +
+;         / \
+;        8   \
+;             +
+;            / \
+;           4   \
+;                +
+;               / \
+;              2   1
+
+;*******n=10********
+;       +
+;      / \
+;   512   +
+;        / \
+;     256   +
+;          / \
+;       128   +
+;            / \
+;          64   +
+;              / \
+;            32   +
+;                / \
+;              16   +
+;                  / \
+;                 8   +
+;                    / \
+;                   4   +
+;                      / \
+;                     2   1
+
+; 1 bit is required to encode the most frequent symbol
+;(n-1) bits are needed to encode the least frequent symbol
