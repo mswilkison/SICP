@@ -802,3 +802,230 @@ one-through-four
       (adjoin-set (make-leaf (first pair)
                              (second pair))
                   (make-leaf-set (rest pairs))))))
+
+
+;; 2.4 Multiple Representations for Abstract Data
+; 2.4.1 Representations for Complex Numbers
+
+; real-imag representation
+(defn real-part [z]
+  (first z))
+
+(defn imag-part [z]
+  (second z))
+
+(defn magnitude [z]
+  (Math/sqrt (+ (square (real-part z)) (square (imag-part z)))))
+
+(defn angle [z]
+  (Math/atan2 (imag-part z) (real-part z)))
+
+(defn make-from-real-imag [x y]
+  (cons x [y]))
+
+(defn make-from-mag-ang [r a]
+  (cons (* r (Math/cos a)) [(* r (Math/sin a))]))
+
+; mag-ang representation
+(defn magnitude [z]
+  (first z))
+
+(defn angle [z]
+  (second z))
+
+(defn real-part [z]
+  (* (magnitude z) (Math/cos (angle z))))
+
+(defn imag-part [z]
+  (* (magnitude z) (Math/sin (angle z))))
+
+(defn make-from-real-imag [x y]
+  (cons (Math/sqrt (+ (square x) (square y)))
+        [(Math/atan2 y x)]))
+
+(defn make-from-mag-ang [r a]
+  (cons r [a]))
+
+(defn add-complex [z1 z2]
+  (make-from-real-imag (+ (real-part z1) (real-part z2))
+                       (+ (imag-part z1) (imag-part z2))))
+
+(defn sub-complex [z1 z2]
+  (make-from-real-imag (- (real-part z1) (real-part z2))
+                       (- (imag-part z1) (imag-part z2))))
+
+(defn mul-complex [z1 z2]
+  (make-from-mag-ang (* (magnitude z1) (magnitude z2))
+                     (+ (angle z1) (angle z2))))
+
+(defn div-complex [z1 z2]
+  (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
+                     (- (angle z1) (angle z2))))
+
+; 2.4.2 Tagged Data
+(defn attach-tag [type-tag contents]
+  (cons type-tag [contents]))
+
+(defn type-tag [datum]
+  (if (seq? datum)
+    (first datum)
+    (throw (Exception. "Bad tagged datum -- TYPE-TAG" datum))))
+
+(defn contents [datum]
+  (if (seq? datum)
+    (rest datum)
+    (throw (Exception. "Bad tagged datum -- CONTENTS" datum))))
+
+(defn rectangular? [z]
+  (= (type-tag z) 'rectangular))
+
+(defn polar? [z]
+  (= (type-tag z) 'polar))
+
+(defn real-part-rectangular [z] (first z))
+
+(defn imag-part-rectangular [z] (second z))
+
+(defn magnitude-rectangular [z]
+  (Math/sqrt (+ (square (real-part-rectangular z))
+                (square (imag-part-rectangular z)))))
+
+(defn angle-rectangular [z]
+  (Math/atan2 (imag-part-rectangular z)
+             (real-part-rectangular z)))
+
+(defn make-from-real-imag-rectangular [x y]
+  (attach-tag 'rectangular (cons x [y])))
+
+(defn make-from-mag-ang-rectangular [r a]
+  (attach-tag 'rectangular
+              (cons (* r (Math/cos a)) [(* r (Math/sin a))])))
+
+(defn magnitude-polar [z]
+  (first z))
+
+(defn angle-polar [z]
+  (second z))
+
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn imag-part-polar [z]
+  (* (magnitude-polar z) (Math/sin (angle-polar z))))
+
+(defn make-from-real-imag-polar [x y]
+  (attach-tag 'polar
+              (cons (Math/sqrt (+ (square x) (square y)))
+                    (Math/atan2 y x))))
+
+(defn make-from-mag-ang-polar [r a]
+  (attach-tag 'polar (cons r [a])))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (Exception. "Unknown type -- REAL-PART" z))))
+
+(defn imag-part [z]
+  (cond (rectangular? z) (imag-part-rectangular (contents z))
+        (polar? z) (imag-part-polar (contents z))
+        :else (throw (Exception. "Unknown type -- IMAG-PART" z))))
+
+(defn magnitude [z]
+  (cond (rectangular? z) (magnitude-rectangular (contents z))
+        (polar? z) (magnitude-polar (contents z))
+        :else (throw (Exception. "Unknown type -- MAGNITUDE" z))))
+
+(defn angle [z]
+  (cond (rectangular? z) (angle-rectangular (contents z))
+        (polar? z) (angle-polar (contents z))
+        :else (throw (Exception. "Unknown type -- ANGLE" z))))
+
+(defn add-complex [z1 z2]
+  (make-from-real-imag (+ (real-part z1) (real-part z2))
+                       (+ (imag-part z1) (imag-part z2))))
+
+(defn make-from-real-imag [x y]
+  (make-from-real-imag-rectangular x y))
+
+(defn make-from-mag-ang [r a]
+  (make-from-mag-ang-polar r a))
+
+; 2.4.3 Data-Directed Programming and Additivity
+(defn install-rectangular-package
+  ;; internal procedures
+  (defn real-part [z] (first z))
+  (defn imag-part [z] (second z))
+  (defn make-from-real-imag [x y] (cons x [y]))
+  (defn magnitude [z]
+    (Math/sqrt (+ (square (real-part z))
+                  (square (imag-part z)))))
+  (defn angle [z]
+    (Math/atan2 (imag-part z) (real-part z)))
+  (defn make-from-mag-ang [r a]
+    (cons (* r (Math/cos a)) (* r (Math/sin a))))
+
+  ;; interface to the rest of the system
+  (defn tag [x] (attach-tag 'rectangular x))
+  (put 'real-part '(rectangular) real-part)
+  (put 'imag-part '(rectangular) imag-part)
+  (put 'magnitude '(rectangular) magnitude)
+  (put 'angle '(rectangular) angle)
+  (put 'make-from-real-imag 'rectangular
+       (fn [x y] (tag (make-from-real-imag x y))))
+  (put 'make-from-mag-ang 'rectangular
+       (fn [r a] (tag (make-from-mag-ang r a))))
+  'done)
+
+(defn install-polar-package
+  ;; internal procedures
+  (defn magnitude [z] (first z))
+  (defn angle [z] (second z))
+  (defn (make-from-mag-ang [r a] (cons r [a])))
+  (defn real-part [z]
+    (* (magnitude z) (Math/cos (angle z))))
+  (defn imag-part [z]
+    (* (mangnitude z) (Math/sin (angle z))))
+  (defn make-from-real-imag [x y]
+    (cons (Math/sqrt (+ (square x) (square y)))
+          (Math/atan2 y x)))
+
+  ;; interface to the rest of the system
+  (defn tag [x] (attach-tag 'polar x))
+  (put 'real-part '(polar) real-part)
+  (put 'imag-part '(polar) imag-part)
+  (put 'magnitued '(polar) magnitude)
+  (put 'angle '(polar) angle)
+  (put 'make-from-real-imag 'polar
+       (fn [x y] (tag (make-from-real-imag x y))))
+  (put 'make-from-mag-ang 'polar
+       (fn [r a] (tag (make-from-mag-ang r a))))
+  'done)
+
+(defn apply-generic [op & args]
+  (let [type-tags (map type-tag args)]
+    (let [proc (get op type-tags)]
+      (if proc
+        (apply proc (map contents args))
+        (throw (Exception. "No method for these types -- APPLY-GENERIC"
+                           (list op type-tags)))))))
+
+(defn real-part [z] (apply-generic 'real-part z))
+(defn imag-part [z] (apply-generic 'imag-part z))
+(defn magnitude [z] (apply-generic 'magnitude z))
+(defn angle [z] (apply-generic 'angle z))
+(defn make-from-real-imag [x y]
+  ((get 'make-from-real-imag 'rectangular) x y))
+(defn make-from-mag-ang [r a]
+  ((get 'make-from-mag-ang 'polar) r a))
+
+(defn make-from-real-imag [x y]
+  (defn dispatch [op]
+    (cond (= op 'real-part) x
+          (= op 'imag-part) y
+          (= op 'magnitude) (Math/sqrt (+ (square x) (square y)))
+          (= op 'angle) (Math/atan2 y x)
+          :else (throw (Exception. "Unknown op -- MAKE-FROM-REAL-IMAG" op))))
+  dispatch)
+
+(defn apply-generic [op arg] (arg op))
