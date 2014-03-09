@@ -37,3 +37,6 @@
   (cond (empty? files) (throw (Exception. "this employee does not exist" employee))
         (exists? employee (division (first files))) (get-record (first files) employee)
         :else (find-employee-record employee (rest files))))
+
+; When Insatiable takes over a new company, the new company must implement the appropriate
+; procedures (get-record, get-salary, and exists?)
