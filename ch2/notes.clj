@@ -1174,3 +1174,12 @@ one-through-four
             (throw (Exception. "No method for these types"
                                (list op type-tags))))))))
 )
+
+; 2.5.3 Example: Symbolic Algebra
+(defn add-poly [p1 p2]
+  (if (same-variable? (variable p1) (variable p2))
+    (make-poly (variable p1)
+               (add-terms (term-list p1)
+                          (term-list p2)))
+    (throw (Exception. "Polys not in same var -- ADD-POLY"
+                       (list p1 p2)))))

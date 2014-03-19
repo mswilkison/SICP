@@ -4,8 +4,21 @@
 (put 'raise 'rational (fn [x] (make-real (/ (numer x) (denom x)))))
 (put 'raise 'real (fn [x] (make-from-real-imag x 0)))
 
+; Exercise 2.85
+(defn project [x]
+  (apply-generic 'project x))
 
-; Exercise 2.84
+(put 'project '(rational) (fn [x] (make-scheme-number (round (/ (numer x) (denom x))))))
+(put 'project '(real) (fn [x] (make-rat (numerator (rationalize x))
+                                        (denominator (rationalize x)))))
+(put 'project '(complex) (fn [x] (make-real (real-part x))))
+
+(defn drop-x [x]
+  (let [projected-x (project (contents x))]
+    (if (= (contents x) (contents (raise projected-x)))
+      (drop projected-x)
+      x)))
+
 (defn apply-generic [op & args]
   (defn raise [subject target]
     (let [subject-type (type-tag subject)
@@ -18,7 +31,7 @@
   (let [type-tags (map type-tag args)]
     (let [proc (get op type-tags)]
       (if proc
-        (apply proc (map contents args))
+        (drop (apply proc (map contents args)))
         (if (= (length args) 2)
           (let [a1 (first args)]
             (cond
