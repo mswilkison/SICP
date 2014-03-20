@@ -1,0 +1,27 @@
+(define (call-the-cops)
+  "The cops are on their way!")
+
+(define (make-account balance pass)
+  (define bad-pass-count 0)
+  (define (withdraw amount)
+    (if (>= balance amount)
+      (begin (set! balance (- balance amount))
+	     balance)
+      "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch p m)
+    (if (eq? p pass)
+      (begin
+	(set! bad-pass-count 0)
+	(cond ((eq? m 'withdraw) withdraw)
+	      ((eq? m 'deposit) deposit)
+	      (else (error "Unknown request -- MAKE-ACCOUNT"
+			   m))))
+      (if (= bad-pass-count 7)
+	(call-the-cops)
+	(begin
+	  (set! bad-pass-count (+ bad-pass-count 1))
+	  (error "Incorrect password")))))
+  dispatch)
