@@ -60,27 +60,27 @@
 
 ;3.1.2 The Benefits of Introducing Assignment
 ; with assignment to model local state
-(define rand
-  (let ((x random-init))
-    (lambda ()
-      (set! x (rand-update x))
-      x)))
-
-(define (estimate-pi trials)
-  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
-
-(define (cesaro-test)
-  (= (gcd (rand) (rand)) 1))
-
-(define (monte-carlo trials experiment)
-  (define (iter trials-remaining trials-passed)
-    (cond ((= trials-remaining 0)
-	   (/ trials-passed trials))
-	  ((experiment)
-	   (iter (- trials-remaining 1) (+ trials-passed 1)))
-	  (else
-	    (iter (- trials-remaining 1) trials-passed))))
-  (iter trials 0))
+;(define rand
+;  (let ((x random-init))
+;    (lambda ()
+;      (set! x (rand-update x))
+;      x)))
+;
+;(define (estimate-pi trials)
+;  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+;
+;(define (cesaro-test)
+;  (= (gcd (rand) (rand)) 1))
+;
+;(define (monte-carlo trials experiment)
+;  (define (iter trials-remaining trials-passed)
+;    (cond ((= trials-remaining 0)
+;	   (/ trials-passed trials))
+;	  ((experiment)
+;	   (iter (- trials-remaining 1) (+ trials-passed 1)))
+;	  (else
+;	    (iter (- trials-remaining 1) trials-passed))))
+;  (iter trials 0))
 
 ; without assignment to model local state
 (define (estimate-pi trials)
@@ -101,3 +101,42 @@
 		      trials-passed
 		      x2))))))
   (iter trials 0 initial-x))
+
+;3.1.3 The Costs of Introducing Assignment
+(define (make-simplified-withdraw balance)
+  (lambda (amount)
+    (set! balance (- balance amount))
+    balance))
+
+(define W (make-simplified-withdraw 25))
+(W 20)
+(W 10)
+
+(define (make-decrementer balance)
+  (lambda (amount)
+    (- balance amount)))
+
+(define D (make-decrementer 25))
+(D 20)
+(D 10)
+
+;functional factorial
+(define (factorial n)
+  (define (iter product counter)
+    (if (> counter n)
+      product
+      (iter (* counter product)
+	    (+ counter 1))))
+  (iter 1 1))
+
+;imperative factorial
+(define (factorial n)
+  (let ((product 1)
+	(counter 1))
+    (define (iter)
+      (if (> counter n)
+	product
+	(begin (set! product (* counter product))
+	       (set! counter (+ counter 1))
+	       (iter))))
+    (iter)))
