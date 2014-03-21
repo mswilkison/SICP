@@ -140,3 +140,47 @@
 	       (set! counter (+ counter 1))
 	       (iter))))
     (iter)))
+
+; 3.2.2 Applying Simple Procedures
+(define (square x)
+  (* x x))
+
+(define (sum-of-squares x y)
+  (+ (square x) (square y)))
+
+(define (f a)
+  (sum-of-squares (+ a 1) (* a 2)))
+
+(f 5)
+
+; 3.2.3 Frames as the Repository of Local State
+(define (make-withdraw balance)
+  (lambda (amount)
+    (if (>= balance amount)
+      (begin (set! balance (- balance amount))
+	     balance)
+      "Insufficient funds")))
+
+(define W1 (make-withdraw 100))
+
+(W1 50)
+
+(define W2 (make-withdraw 100))
+
+; 3.2.4 Internal Definitions
+(define (sqrt x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+      guess
+      (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+; 3.3.1 Mutable List Structure
+(define (cons x y)
+  (let ((new (get-new-pair)))
+    (set-car! new x)
+    (set-cdr! new y)))
